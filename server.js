@@ -26,14 +26,28 @@ router.get('/', function(req, res){
 });
 
 //first router.route will handle .post and .get
-router.route('/bikes').post(function(req, res){
-  var bike = new Bike();
-  bike.company = req.body.company;
-  bike.model = req.body.model;
-  bike.type = req.body.type;
+router.route('/bikes')
+  .post(function(req, res){
+    var bike = new Bike();
+    bike.company = req.body.company;
+    bike.model = req.body.model;
+    bike.type = req.body.type;
 
-  //save bike and check for errors
-  bike.save()
-
-
+    //save bike and check for errors
+    bike.save(function(err){
+      if(err){
+        res.send(err);
+      } else {
+        res.json({message: 'Bike Created'})
+      }
+    })
 })
+  .get(function(req, res){
+    Bike.find(function(err, bikes){
+      if (err){
+        res.send(err);
+      }else {
+        res.json(bikes);
+      }
+    });
+  });
