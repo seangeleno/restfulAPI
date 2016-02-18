@@ -10,6 +10,8 @@ var express    = require('express'),
 //mongoose connection
 mongoose.connect('mongodb://localhost/myRest');
 
+var Bike = require('./app/models/bike')
+
 //register middleware
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -48,6 +50,48 @@ router.route('/bikes')
         res.send(err);
       }else {
         res.json(bikes);
+      }
+    });
+  });
+
+router.route('/bikes/:bike_id')
+  .get(function(req, res){
+    Bike.findById(req.params.bike_id, function(err, bike){
+      if (err){
+        res.send(err)
+      } else {
+        res.json(bike);
+      }
+    });
+  })
+  .put(function(req, res){
+    Bike.findById(req.params.bike_id, function(err, bike){
+      if (err){
+        res.send(err)
+      } else {
+        bike.company = req.body.company;
+        bike.model = req.body.model;
+        bike.type = req.body.type;
+
+        bike.save(function(err){
+          if (err){
+            res.send(err);
+          }
+          else {
+            res.json({dude: 'Bike has been updated'});
+          }
+        });
+      }
+    });
+  })
+  .delete(function(req, res){
+    Bike.remove({
+      _id: req.params.bike_id
+    }, function(err, bike){
+      if (err){
+        res.send(err)
+      } else {
+        res.json({message: 'Successfully deleted bike.'})
       }
     });
   });
