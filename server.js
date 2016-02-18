@@ -3,7 +3,7 @@ var express    = require('express'),
     mongoose   = require('mongoose'),
     colors     = require('colors'),
     bodyParser = require('body-parser'),
-    morgan     = require('logger'),
+    logger     = require('morgan'),
     port       = process.env.PORT || 3000,
     router     = express.Router();
 
@@ -51,3 +51,10 @@ router.route('/bikes')
       }
     });
   });
+
+//register routes, all routes will be prefixed with /api
+app.use('/api', router);
+
+//start server
+app.listen(port);
+console.log('Taste the rainbow on port '.rainbow + port);
